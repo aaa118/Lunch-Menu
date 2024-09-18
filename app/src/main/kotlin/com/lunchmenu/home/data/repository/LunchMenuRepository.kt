@@ -1,6 +1,5 @@
 package com.lunchmenu.home.data.repository
 
-import android.util.Log
 import com.lunchmenu.home.data.datasource.local.AppDatabase
 import com.lunchmenu.home.data.datasource.local.LunchMenuDataSource
 import com.lunchmenu.home.data.datasource.local.dao.BusinessesDao
@@ -11,7 +10,6 @@ import com.lunchmenu.home.data.datasource.remote.model.YelpResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +49,7 @@ class LunchMenuRepository @Inject constructor(
         }
     }
 
-    private suspend fun fetchFromRemote() {
+     suspend fun fetchFromRemote() {
         val menus = lunchMenuDataSource.getLunchMenu()
         for (list in menus) {
             for (item in list) {

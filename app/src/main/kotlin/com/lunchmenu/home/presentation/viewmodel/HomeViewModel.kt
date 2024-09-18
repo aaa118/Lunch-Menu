@@ -1,11 +1,17 @@
 package com.lunchmenu.home.presentation.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import com.lunchmenu.home.data.datasource.remote.HomeRemoteWorker
 import com.lunchmenu.home.data.repository.LunchMenuRepository
 import com.lunchmenu.home.domain.usecase.ConvertLunchMenuForCalendarUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,12 +43,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadMenu() {
-        viewModelScope.launch {
-            _mapOfWeeksAndMenu.emit(HomeState.Loading)
-        }
         viewModelScope.launch(Dispatchers.IO) {
             lunchMenuForCalendarUseCase.invoke().collectLatest {
-                _mapOfWeeksAndMenu.emit(HomeState.ShowMenu(it))
+                if (it.isNotEmpty()) _mapOfWeeksAndMenu.emit(HomeState.ShowMenu(it))
+                else _mapOfWeeksAndMenu.emit(HomeState.Loading)
             }
         }
     }
