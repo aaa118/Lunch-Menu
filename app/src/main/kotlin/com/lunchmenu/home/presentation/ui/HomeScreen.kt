@@ -29,6 +29,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lunchmenu.home.presentation.viewmodel.HomeState
 import com.lunchmenu.home.presentation.viewmodel.HomeViewModel
 
+//sealed interface State {
+//    data object Loading : State
+//    data object Error : State
+//    data object ShowLegalAgreements : State
+//    data object ShowRadarTooltip : State
+//    data object ShowPopups : State
+//    data class ShowTapsAndViewedMeNotification(val isBoosting: Boolean, val viewedMeCount: Int, val tapsCount: Int) : State
+//    sealed interface PopupUi : State {
+//        data object ShowGenderUpdates : PopupUi
+//        data object ShowRoamOnboarding : PopupUi
+//        data object ShowBraze : PopupUi
+//        data object ShowInstagramAuthentication : PopupUi
+//        data object None : PopupUi
+//    }
+//}
+
 private const val TAG = "HomeViewModel"
 @Composable
 fun HomeScreen(modifier: Modifier, viewModel: HomeViewModel = viewModel()) = Box(
