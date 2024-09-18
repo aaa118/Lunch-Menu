@@ -87,9 +87,7 @@ dependencies {
     implementation(libs.androidx.hilt.work)
 
     testImplementation(libs.junit)
-    testImplementation(libs.junit.vintage)
-    testImplementation(libs.mockk.agent)
-    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk)
     testImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
