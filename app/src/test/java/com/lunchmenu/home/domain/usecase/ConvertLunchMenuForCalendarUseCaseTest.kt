@@ -1,4 +1,4 @@
-package com.gusto.lunchmenu.home.domain.usecase
+package com.lunchmenu.home.domain.usecase
 
 import com.lunchmenu.home.data.datasource.local.entity.LunchMenuItem
 import com.lunchmenu.home.data.repository.LunchMenuRepository
@@ -19,9 +19,8 @@ import org.junit.Test
 class ConvertLunchMenuForCalendarUseCaseTest {
     private val lunchMenuRepository: LunchMenuRepository = mockk(relaxed = true)
     private val sut = ConvertLunchMenuForCalendarUseCase(lunchMenuRepository)
-    var lunchMenuItem = LunchMenuItem(name = "Chick")
 
-    val fakeList = listOf(
+    private val fakeList = listOf(
         LunchMenuItem(name = "Chick"),
         LunchMenuItem(name = "Tac"),
         LunchMenuItem(name = "Cur"),
