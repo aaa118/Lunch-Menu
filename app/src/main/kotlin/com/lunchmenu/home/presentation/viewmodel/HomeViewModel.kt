@@ -53,8 +53,8 @@ class HomeViewModel @Inject constructor(
 
     fun loadYelp() {
         viewModelScope.launch {
-            val list = repository.getYelpBeerBusinesses()
-            Log.i(TAG, "loadYelp: $list")
+//            val list = repository.getYelpBeerBusinesses()
+//            Log.i(TAG, "loadYelp: $list")
         }
     }
 }
