@@ -17,7 +17,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.lang.Thread.sleep
 import javax.inject.Inject
@@ -46,18 +48,30 @@ class LunchMenuRepository @Inject constructor(
         try {
             // Attempt to fetch the lunch menu
             val cacheMenus = lunchMenuDao.getAllFlowable()
-            var deferredList = mutableListOf<Deferred<Int>>()
+            val deferredList = mutableListOf<Deferred<Int>>()
+            val jobList = mutableListOf<Job>()
             // Fetch From remote
+            Log.i(TAG, "getLunchMenu: Start Async")
             repeat(2) {
-                val deferred = repositoryRemoteScope.async {
-                    async { fetchFromRemote() }
-                    async { getYelpBeerBusinesses() }
-                    async { getYelpPizzaBusinesses() }
-                    Log.i(TAG, "getLunchMenu: ")
+
+                val job = repositoryRemoteScope.async {
+                    getYelpBeerBusinesses()
+                    Log.i(TAG, "loop complete ")
                 }
-                deferredList.add(deferred)
+                val job2 = repositoryRemoteScope.async {
+                    getYelpPizzaBusinesses()
+                    Log.i(TAG, "loop complete ")
+                }
+                val job3 = repositoryRemoteScope.async {
+                    fetchFromRemote()
+                    Log.i(TAG, "loop complete ")
+                }
+                jobList.add(job)
+                jobList.add(job2)
+                jobList.add(job3)
             }
-            deferredList.awaitAll()
+//            deferredList.awaitAll()
+            jobList.joinAll()
             Log.i(TAG, "getLunchMenu: Completed")
 
 
@@ -68,7 +82,38 @@ class LunchMenuRepository @Inject constructor(
         }
     }
 
-     suspend fun fetchFromRemote() {
+    suspend fun getLunchMenu2(): Result<Flow<List<LunchMenuItem>>> = supervisorScope {
+        try {
+            val cacheMenus = lunchMenuDao.getAllFlowable()
+            val deferredList = mutableListOf<Deferred<Int>>()
+            // Fetch From remote
+            Log.i(TAG, "getLunchMenu: Start Async")
+            repeat(2) {
+                deferredList.add(async {
+                    getYelpBeerBusinesses()
+                    Log.i(TAG, "getYelpBeerBusinesses complete")
+                })
+                deferredList.add(async {
+                    getYelpPizzaBusinesses()
+                    Log.i(TAG, "getYelpPizzaBusinesses complete")
+                })
+                deferredList.add(async {
+                    fetchFromRemote()
+                    Log.i(TAG, "fetchFromRemote complete")
+                })
+            }
+            // Await all deferreds
+            deferredList.awaitAll()
+            Log.i(TAG, "getLunchMenu: Completed")
+            return@supervisorScope Result.success(cacheMenus)
+        } catch (e: Exception) {
+            // Handle exceptions that weren't handled in child coroutines
+            Log.e(TAG, "Error in getLunchMenu: ${e.message}")
+            return@supervisorScope Result.failure(e)
+        }
+    }
+
+    suspend fun fetchFromRemote() {
         val menus = lunchMenuDataSource.getLunchMenu()
 
         for (list in menus) {
@@ -81,12 +126,11 @@ class LunchMenuRepository @Inject constructor(
 
     suspend fun getYelpBeerBusinesses(): YelpResponse? {
         sleep(3000)
-        Log.i(TAG, "getYelpBeerBusinesses: ")
-       return yelpApi.getBeerBusinesses()
+        return yelpApi.getBeerBusinesses()
     }
 
     suspend fun getYelpPizzaBusinesses(): YelpResponse? {
-        Log.i(TAG, "getYelpPizzaBusinesses: ")
-       return yelpApi.getPizzaBusinesses()
+//        throw IllegalStateException("An error occurred in getYelpPizzaBusinesses")
+        return yelpApi.getPizzaBusinesses()
     }
 }
