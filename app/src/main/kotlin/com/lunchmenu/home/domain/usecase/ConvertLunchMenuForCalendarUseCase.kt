@@ -37,13 +37,7 @@ class ConvertLunchMenuForCalendarUseCase @Inject constructor(private val lunchMe
         )
         // Flatten the list of meals to a single list
         val allMeals = listsOfMenu.map { it.name }
-        // Get the current date and time
-        val calendar = Calendar.getInstance()
-        // Find the first upcoming Monday, this ensure calendar always start with upcoming Monday.
-        while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1) // Move to the next day until it's Monday
-        }
-        val dateFormatter = SimpleDateFormat("EEEE, MMM dd", Locale.getDefault())
+        val calendar = getCalendarForUpcomingMonday()
         val mealCalendarMap = mutableListOf<Pair<String, String>>()
         var mealIndex = 0
         // Loop over all the weeks and map them to 5 days each, will map to 10 days based on
@@ -52,7 +46,7 @@ class ConvertLunchMenuForCalendarUseCase @Inject constructor(private val lunchMe
             val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
             // If it's a weekday add it to the meal map
             if (dayOfWeek in daysOfWeek) {
-                val formattedDate = dateFormatter.format(calendar.time)
+                val formattedDate = getFormattedDate(calendar)
                 mealCalendarMap.add(Pair(formattedDate, allMeals[mealIndex]))
                 mealIndex++
             }
@@ -60,6 +54,24 @@ class ConvertLunchMenuForCalendarUseCase @Inject constructor(private val lunchMe
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
         return mealCalendarMap
+    }
+
+    private fun getFormattedDate(calendar: Calendar): String {
+        val dateFormatter = SimpleDateFormat("EEEE, MMM dd", Locale.getDefault())
+        return dateFormatter.format(calendar.time)
+    }
+
+    /**
+     * Iterates through the week to find the upcoming Monday
+     */
+    private fun getCalendarForUpcomingMonday(): Calendar {
+        // Get the current date and time
+        val calendar = Calendar.getInstance()
+        // Find the first upcoming Monday, this ensure calendar always start with upcoming Monday.
+        while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1) // Move to the next day until it's Monday
+        }
+        return calendar
     }
 
 }

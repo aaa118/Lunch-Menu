@@ -1,14 +1,18 @@
 package com.lunchmenu.home.presentation.ui
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.lunchmenu.home.presentation.viewmodel.HomeState
 import com.lunchmenu.home.presentation.viewmodel.HomeViewModel
 
@@ -77,6 +82,17 @@ fun CalendarGridView(mealCalendarMap: List<Pair<String, String>>) {
     }
 }
 
+/**
+ *  https://s3-media2.fl.yelpcdn.com/bphoto/DMc3Bgf8NahyzLFuTSrA5Q/o.jpg
+ *  https://s3-media2.fl.yelpcdn.com/bphoto/GrMIfmWngDxdnPfZMdoKpw/o.jpg
+ *  https://s3-media2.fl.yelpcdn.com/bphoto/jx0z_0DtZ0b5zPu-6zADFQ/o.jpg
+ *  https://s3-media2.fl.yelpcdn.com/bphoto/FHHj6L0eN1mOBnzmhy6ZrA/o.jpg
+ *  https://s3-media1.fl.yelpcdn.com/bphoto/Vhf1v9FKU-n-PH4GgkVAVg/o.jpg
+ *  https://s3-media1.fl.yelpcdn.com/bphoto/YmsB0Prxhi4h6SVI2FEVbQ/o.jpg
+ *  https://s3-media2.fl.yelpcdn.com/bphoto/fy8WOGJM_PLWP7oY9C11tQ/o.jpg
+ *  https://s3-media4.fl.yelpcdn.com/bphoto/KcBFGl5QOMJwuRE2NBnamg/o.jpg
+ */
+
 @Composable
 fun CalendarDayItem(date: String, meal: String) {
     Card(
@@ -85,27 +101,42 @@ fun CalendarDayItem(date: String, meal: String) {
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp) // Add elevation for card-like look
     ) {
-        Column(
+        Row(
             modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally // Center text horizontally
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = date,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.tertiary,
-                textAlign = TextAlign.Left,
-                maxLines = 1, // Ensure single line
-                overflow = TextOverflow.Ellipsis // Add ellipsis if text overflows
+            AsyncImage(
+                model = "https://s3-media2.fl.yelpcdn.com/bphoto/DMc3Bgf8NahyzLFuTSrA5Q/o.jpg",
+                contentDescription = "test",
+                modifier = Modifier.size(64.dp) // Optional: adjust size as needed
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = meal,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Left)
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally // Center text horizontally
+            ) {
+                Text(text = date,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    textAlign = TextAlign.Left,
+                    maxLines = 1, // Ensure single line
+                    overflow = TextOverflow.Ellipsis // Add ellipsis if text overflows
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = meal,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Left)
+            }
         }
+
     }
 }
 
