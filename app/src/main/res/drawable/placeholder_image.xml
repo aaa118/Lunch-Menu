@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Background rectangle -->
+    <path
+        android:fillColor="#CCCCCC"
+        android:pathData="M0,0h64v64h-64z" />
+
+    <!-- Placeholder icon (e.g., a simple camera icon) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,28h24v16h-24z M28,20a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+</vector>

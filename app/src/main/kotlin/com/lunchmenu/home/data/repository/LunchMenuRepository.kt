@@ -8,7 +8,6 @@ import com.lunchmenu.home.data.datasource.local.dao.LunchMenuDao
 import com.lunchmenu.home.data.datasource.local.entity.LunchMenuItem
 import com.lunchmenu.home.data.datasource.remote.YelpApi
 import com.lunchmenu.home.data.datasource.remote.model.YelpResponse
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +17,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.lang.Thread.sleep

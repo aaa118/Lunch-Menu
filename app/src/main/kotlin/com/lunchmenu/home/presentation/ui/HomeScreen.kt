@@ -21,16 +21,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.lunchmenu.R
 import com.lunchmenu.home.presentation.viewmodel.HomeState
 import com.lunchmenu.home.presentation.viewmodel.HomeViewModel
 
@@ -51,6 +52,7 @@ import com.lunchmenu.home.presentation.viewmodel.HomeViewModel
 //}
 
 private const val TAG = "HomeViewModel"
+
 @Composable
 fun HomeScreen(modifier: Modifier, viewModel: HomeViewModel = viewModel()) = Box(
     modifier = modifier,
@@ -58,8 +60,8 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeViewModel = viewModel()) = Box
 ) {
     val uiState = viewModel.mapOfWeeksAndMenu.collectAsState()
     when (uiState.value) {
-        HomeState.Error ->  Text("An error occurred. Please try again.")
-        HomeState.Loading ->  CircularProgressIndicator()
+        HomeState.Error -> Text("An error occurred. Please try again.")
+        HomeState.Loading -> CircularProgressIndicator()
         is HomeState.ShowMenu -> {
             Log.i(TAG, "HomeScreen: UI Loaded")
             CalendarGridView((uiState.value as HomeState.ShowMenu).list)
@@ -107,11 +109,18 @@ fun CalendarDayItem(date: String, meal: String) {
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = "https://s3-media2.fl.yelpcdn.com/bphoto/DMc3Bgf8NahyzLFuTSrA5Q/o.jpg",
-                contentDescription = "test",
-                modifier = Modifier.size(64.dp) // Optional: adjust size as needed
-            )
+            if (LocalInspectionMode.current) {
+                Image(
+                    painterResource(R.drawable.placeholder_image),
+                    contentDescription = "test",
+                )
+            } else {
+                AsyncImage(
+                    model = "https://s3-media2.fl.yelpcdn.com/bphoto/DMc3Bgf8NahyzLFuTSrA5Q/o.jpg",
+                    contentDescription = "test",
+                    modifier = Modifier.size(64.dp) // Optional: adjust size as needed
+                )
+            }
             Spacer(modifier = Modifier.width(8.dp))
 
             Column(
@@ -121,7 +130,8 @@ fun CalendarDayItem(date: String, meal: String) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally // Center text horizontally
             ) {
-                Text(text = date,
+                Text(
+                    text = date,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.tertiary,
                     textAlign = TextAlign.Left,
@@ -133,10 +143,10 @@ fun CalendarDayItem(date: String, meal: String) {
                     text = meal,
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Left)
+                    textAlign = TextAlign.Left
+                )
             }
         }
-
     }
 }
 
@@ -144,8 +154,8 @@ fun CalendarDayItem(date: String, meal: String) {
 @Composable
 fun CalendarGridPreview() {
     val list = listOf(
-        Pair("No1", "No1"),
-        Pair("No2", "No2"),
+        Pair("Mon, Feb 30", "Pizza"),
+        Pair("Tue, Feb 31", "Pizza2"),
     )
     CalendarGridView(list)
 }
