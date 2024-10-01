@@ -53,6 +53,8 @@ class HomeViewModel @Inject constructor(
 
     fun loadYelp() {
         viewModelScope.launch {
+            val list = repository.getPictures(2, 30)
+            Log.i(TAG, "getLunchMenu: Completed $list")
 //            val list = repository.getYelpBeerBusinesses()
 //            Log.i(TAG, "loadYelp: $list")
         }

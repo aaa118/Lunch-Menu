@@ -6,7 +6,9 @@ import com.lunchmenu.home.data.datasource.local.LunchMenuDataSource
 import com.lunchmenu.home.data.datasource.local.dao.BusinessesDao
 import com.lunchmenu.home.data.datasource.local.dao.LunchMenuDao
 import com.lunchmenu.home.data.datasource.local.entity.LunchMenuItem
+import com.lunchmenu.home.data.datasource.remote.PictureService
 import com.lunchmenu.home.data.datasource.remote.YelpApi
+import com.lunchmenu.home.data.datasource.remote.model.Picture
 import com.lunchmenu.home.data.datasource.remote.model.YelpResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -27,6 +29,7 @@ private const val TAG = "HomeViewModel"
 class LunchMenuRepository @Inject constructor(
     private val lunchMenuDataSource: LunchMenuDataSource,
     private val yelpApi: YelpApi,
+    private val pictureService: PictureService,
     private val appDatabase: AppDatabase,
 ) {
     private val businessesDao: BusinessesDao
@@ -46,7 +49,6 @@ class LunchMenuRepository @Inject constructor(
         try {
             // Attempt to fetch the lunch menu
             val cacheMenus = lunchMenuDao.getAllFlowable()
-            val deferredList = mutableListOf<Deferred<Int>>()
             val jobList = mutableListOf<Job>()
             // Fetch From remote
             Log.i(TAG, "getLunchMenu: Start Async")
@@ -70,7 +72,12 @@ class LunchMenuRepository @Inject constructor(
             }
 //            deferredList.awaitAll()
             jobList.joinAll()
-            Log.i(TAG, "getLunchMenu: Completed")
+            for (i in 1 until 5) {
+                val list = getPictures(i, 30)
+                Log.i(TAG, "getLunchMenu: Completed $list")
+            }
+
+            Log.i(TAG, "getLunchMenu: Completed ")
 
 
             return@withContext Result.success(cacheMenus)
@@ -120,6 +127,10 @@ class LunchMenuRepository @Inject constructor(
                 lunchMenuDao.insert(dbItem)
             }
         }
+    }
+
+    suspend fun getPictures(i: Int, i2: Int): List<Picture> {
+        return pictureService.pictures(i, i2)
     }
 
     suspend fun getYelpBeerBusinesses(): YelpResponse? {
